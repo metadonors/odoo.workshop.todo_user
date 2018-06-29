@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="todo_task_form_view_inherited">
+        <field name="name">todo.task.form</field>
+        <field name="model">todo.task</field>
+        <field name="inherit_id" ref="todo_app.todo_task_form_view"/>
+        
+        <!-- ...cerca e modifica i tag XML in questo punto... -->
+        <field name="arch" type="xml">
+            <!-- Dopo il campo 'name' aggiungi il campo 'user_id' -->
+            <field name="name" position="after">
+                <field name="user_id"/>
+            </field>
+
+            <!-- prima del campo 'is_done' aggiungi il campo 'deadline_date' -->
+            <field name="is_done" position="before">
+                <field name="deadline_date"/>
+            </field>
+
+            <!-- modifica gli attributi del campo 'active' per rederlo invisibile -->
+            <field name="active" positiion="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <!-- Aggiungiamo i widget della messaggistica -->
+            <sheet position="after">
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </sheet>
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="todo_task_tree_view_inherited">
+        <field name="name">todo.task.tree</field>
+        <field name="model">todo.task</field>
+        <field name="inherit_id" ref="todo_app.todo_task_tree_view"/>
+        <!-- ...cerca e modifica i tag XML in questo punto... -->
+        <field name="arch" type="xml">
+            <!-- Dopo il campo 'name' aggiungi il campo 'user_id' -->
+            <field name="name" position="after">
+                <field name="user_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="todo_task_search_view_inherited">
+        <field name="name">todo.task.search</field>
+        <field name="model">todo.task</field>
+        <field name="inherit_id" ref="todo_app.todo_task_search_view"/>
+        <!-- ...cerca e modifica i tag XML in questo punto... -->
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <!-- Aggiungi il campo 'user_id' all ricerca libera-->
+                <field name="user_id"/>
+
+                <!-- Aggiungi il filtro predefinito "I miei task" -->
+
+                <filter 
+                    name="filter_my_tasks" 
+                    string="I miei Tasks" 
+                    domain="[('user_id','=',uid)]" />
+                
+                <!-- Aggiungi il filtro predefinito "Task non assegnati" -->
+                <filter 
+                    name="filter_not_assigned" 
+                    string="Non assegnati" 
+                    domain="[('user_id','=', False)]" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Modifica l'elemento del menu -->
+    <record id="todo_app.menu_todo_task" model="ir.ui.menu">
+        <field name="name">I miei Todo</field>
+    </record>
+
+    <!-- Modifica la action -->
+    <record id="todo_app.action_todo_task" model="ir.actions.act_window">
+        <field name="context">
+            {'search_default_filter_my_tasks': True}
+        </field>
+    </record>
+</odoo>
